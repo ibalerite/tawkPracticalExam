@@ -1,10 +1,8 @@
 package com.example.tawkpracticaltest.ui.profile
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.addTextChangedListener
@@ -15,6 +13,7 @@ import com.example.tawkpracticaltest.data.models.GithubUserProfile
 import com.example.tawkpracticaltest.ui.TawkUiState
 import com.example.tawkpracticaltest.ui.TawkViewModel
 import com.example.tawkpracticaltest.ui.TawkViewModelFactory
+import com.facebook.shimmer.ShimmerFrameLayout
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -23,8 +22,17 @@ class ProfileActivity : AppCompatActivity() {
     private var avatar: ImageView? = null
     private var toolbar: Toolbar? = null
     private var title: TextView? = null
+    private var following: TextView? = null
+    private var followers: TextView? = null
+    private var name: TextView? = null
+    private var company: TextView? = null
+    private var blog: TextView? = null
     private var notesEditText: EditText? = null
     private var save: Button? = null
+    private var profileShimmerLayout: ShimmerFrameLayout? = null
+    private var profileLayout: LinearLayout? = null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,8 +57,18 @@ class ProfileActivity : AppCompatActivity() {
         avatar = findViewById(R.id.avatar)
         toolbar = findViewById(R.id.toolbar)
         title = findViewById(R.id.title)
+        followers = findViewById(R.id.followers)
+        following = findViewById(R.id.following)
+        name = findViewById(R.id.name)
+        company = findViewById(R.id.company)
+        blog = findViewById(R.id.blog)
         notesEditText = findViewById(R.id.notes)
         save = findViewById(R.id.save)
+        profileShimmerLayout = findViewById(R.id.profileShimmerLayout)
+        profileLayout = findViewById(R.id.profile)
+
+        profileLayout?.visibility = View.GONE
+        profileShimmerLayout?.startShimmer()
     }
 
 
@@ -93,8 +111,18 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun updateUserProfile(profile: GithubUserProfile) {
+
         avatar?.load(profile.avatarUrl)
         title?.text = profile.name
+        followers?.text = "Followers: " + profile.followers.toString()
+        following?.text = "Following: " + profile.following.toString()
+        name?.text = "Name: " + profile.name
+        company?.text = "Company: " + profile.company
+        blog?.text = "Blog: " + profile.blog
+
+        profileLayout?.visibility = View.VISIBLE
+        profileShimmerLayout?.stopShimmer()
+        profileShimmerLayout?.visibility = View.GONE
     }
 
     companion object {
