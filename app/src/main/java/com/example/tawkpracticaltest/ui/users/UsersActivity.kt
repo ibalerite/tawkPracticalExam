@@ -7,6 +7,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -38,6 +39,8 @@ class UsersActivity : AppCompatActivity() {
     private var isNetworkAvailable = true
     private var connectivityManager: ConnectivityManager? = null
     private var connectivityChecker: ConnectivityChecker? = null
+
+    private var progressCircular: ProgressBar? = null
 
     private val pagination = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -126,6 +129,7 @@ class UsersActivity : AppCompatActivity() {
         shimmerLayout = findViewById(R.id.shimmerLayout)
         recyclerView = findViewById(R.id.recyclerView)
         search = findViewById(R.id.search)
+        progressCircular = findViewById(R.id.progress_circular)
 
         recyclerView?.adapter = adapter
         recyclerView?.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
@@ -150,7 +154,10 @@ class UsersActivity : AppCompatActivity() {
             val uiState = _uiState ?: return@observe
 
             when (uiState) {
-                TawkUiState.Loading -> loading = true
+                TawkUiState.Loading -> {
+                    progressCircular?.visibility = View.VISIBLE
+                    loading = true
+                }
 
                 is TawkUiState.UsersRetrieved -> updateUsers(uiState.users)
                 is TawkUiState.SearchResults -> updateUsers(uiState.users)
@@ -161,6 +168,7 @@ class UsersActivity : AppCompatActivity() {
 
     private fun updateUsers(users: List<GithubUser>) {
         loading = false
+        progressCircular?.visibility = View.GONE
         if (!searching) {
             adapter?.items = adapter?.items?.plus(users)!!
         } else {
