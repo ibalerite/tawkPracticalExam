@@ -108,13 +108,14 @@
                     tools:text="Blog: https://google.com" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/notes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_normal"
                     android:text="Notes:" />
 
                 <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/notes"
+                    android:id="@+id/notesEditText"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:hint="Notes..."

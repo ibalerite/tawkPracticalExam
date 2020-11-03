@@ -26,7 +26,29 @@ class TawkViewModel constructor(
         if (githubJob?.isActive == true) {
             return
         }
+        emitUiState(TawkUiState.Loading)
         githubJob = launchGetUsers(since)
+    }
+
+    fun getUsers() {
+        emitUiState(TawkUiState.Loading)
+        viewModelScope.launch(dispatcherProvider.computation) {
+            val result = githubRepository.getUsersFromCache()
+
+            withContext(dispatcherProvider.main) {
+                when (result) {
+                    is Result.Success -> {
+                        if (result.data.isEmpty()) {
+                            getUsers(0L)
+                        } else {
+                            emitUiState(TawkUiState.UsersRetrieved(result.data))
+                        }
+                    }
+                    is Result.Error ->
+                        getUsers(0L)
+                }
+            }
+        }
     }
 
     fun getUserProfile(login: String) {
@@ -37,6 +59,7 @@ class TawkViewModel constructor(
     }
 
     fun getUsers(searchString: String) = viewModelScope.launch(dispatcherProvider.computation) {
+        withContext(dispatcherProvider.main) { emitUiState(TawkUiState.Loading) }
         val result = githubRepository.getUsers(searchString)
         withContext(dispatcherProvider.main) {
             when (result) {
@@ -49,7 +72,16 @@ class TawkViewModel constructor(
     }
 
     fun updateUser(user: GithubUser) = viewModelScope.launch(dispatcherProvider.computation) {
-        githubRepository.updateUser(user)
+        val result = githubRepository.updateUser(user)
+
+        withContext(dispatcherProvider.main) {
+            when (result) {
+                is Result.Success ->
+                    emitUiState(TawkUiState.UserUpdated(result.data))
+                is Result.Error ->
+                    emitUiState(TawkUiState.Error(result.exception.message.toString()))
+            }
+        }
     }
 
     private fun launchGetUsers(since: Long): Job {

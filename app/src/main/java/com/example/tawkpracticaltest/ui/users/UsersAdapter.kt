@@ -49,9 +49,8 @@ class UsersAdapter constructor(
     private fun createUsersViewHolder(parent: ViewGroup): UsersViewHolder {
         return UsersViewHolder(layoutInflater.inflate(R.layout.item_user, parent, false)) {
             val intent = Intent(host, ProfileActivity::class.java)
-            intent.putExtra(ProfileActivity.EXTRA_USER, it.login)
-            host.startActivity(intent)
+            intent.putExtra(ProfileActivity.EXTRA_USER, it)
+            host.startActivityForResult(intent, ProfileActivity.REQUEST_CODE)
         }
     }
-
 }

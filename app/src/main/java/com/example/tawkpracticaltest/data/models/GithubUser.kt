@@ -1,10 +1,13 @@
 package com.example.tawkpracticaltest.data.models
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @Entity(tableName = "github_user")
 data class GithubUser(
     @ColumnInfo(name = "login")
@@ -26,60 +29,60 @@ data class GithubUser(
 
     @ColumnInfo(name = "gravatar_url", defaultValue = "")
     @SerializedName("gravatar_url")
-    val gravatarId: String,
+    val gravatarId: String?,
 
     @ColumnInfo(name = "url", defaultValue = "")
     @SerializedName("url")
-    val url: String,
+    val url: String?,
 
     @ColumnInfo(name = "html_url", defaultValue = "")
     @SerializedName("html_url")
-    val htmlUrl: String,
+    val htmlUrl: String?,
 
     @ColumnInfo(name = "followers_url", defaultValue = "")
     @SerializedName("followers_url")
-    val followersUrl: String,
+    val followersUrl: String?,
 
     @ColumnInfo(name = "following_url", defaultValue = "")
     @SerializedName("following_url")
-    val followingUrl: String,
+    val followingUrl: String?,
 
     @ColumnInfo(name = "gists_url", defaultValue = "")
     @SerializedName("gists_url")
-    val gistsUrl: String,
+    val gistsUrl: String?,
 
     @ColumnInfo(name = "starred_url", defaultValue = "")
     @SerializedName("starred_url")
-    val starredUrl: String,
+    val starredUrl: String?,
 
     @ColumnInfo(name = "subscriptions_url", defaultValue = "")
     @SerializedName("subscriptions_url")
-    val subscriptionsUrl: String,
+    val subscriptionsUrl: String?,
 
     @ColumnInfo(name = "organizations_url", defaultValue = "")
     @SerializedName("organizations_url")
-    val organizationsUrl: String,
+    val organizationsUrl: String?,
 
     @ColumnInfo(name = "repos_url", defaultValue = "")
     @SerializedName("repos_url")
-    val reposUrl: String,
+    val reposUrl: String?,
 
     @ColumnInfo(name = "events_url", defaultValue = "")
     @SerializedName("events_url")
-    val eventsUrl: String,
+    val eventsUrl: String?,
 
     @ColumnInfo(name = "received_events_url", defaultValue = "")
     @SerializedName("received_events_url")
-    val receivedEventsUrl: String,
+    val receivedEventsUrl: String?,
 
     @ColumnInfo(name = "type", defaultValue = "")
     @SerializedName("type")
-    val type: String,
+    val type: String?,
 
     @ColumnInfo(name = "site_admin")
     @SerializedName("site_admin")
     val siteAdmin: Boolean,
 
     @ColumnInfo(name = "notes", defaultValue = "")
-    var notes: String = ""
-)
+    var notes: String? = ""
+) : Parcelable

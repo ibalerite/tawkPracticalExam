@@ -9,21 +9,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.Toolbar
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/purple_500"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textColor="@android:color/white"
-                tools:text="Sample Name" />
-        </androidx.appcompat.widget.Toolbar>
-
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"
             android:layout_height="150dp"
@@ -46,16 +31,15 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/darker_gray"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    tools:text="Followers: 100" />
+                    android:gravity="center" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/darker_gray"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    tools:text="Following: 300" />
+                    android:gravity="center" />
+
             </LinearLayout>
 
 
@@ -63,15 +47,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/darker_gray"
-                android:layout_marginTop="@dimen/spacing_normal"
-                tools:text="Name: John Appleseed" />
+                android:layout_marginTop="@dimen/spacing_normal"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/darker_gray"
-                android:layout_marginTop="@dimen/spacing_normal"
-                tools:text="Company: Apple" />
+                android:layout_marginTop="@dimen/spacing_normal"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
@@ -79,15 +61,13 @@
                 android:background="@android:color/darker_gray"
                 android:layout_marginTop="@dimen/spacing_normal"
                 android:autoLink="web"
-                android:linksClickable="true"
-                tools:text="Blog: https://google.com" />
+                android:linksClickable="true" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/darker_gray"
-                android:layout_marginTop="@dimen/spacing_normal"
-                android:text="Notes:" />
+                android:layout_marginTop="@dimen/spacing_normal" />
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:layout_width="match_parent"
@@ -96,14 +76,6 @@
                 android:hint="Notes..."
                 android:inputType="textMultiLine" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/darker_gray"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/spacing_normal"
-                android:enabled="false"
-                android:text="SAVE" />
         </LinearLayout>
 
 

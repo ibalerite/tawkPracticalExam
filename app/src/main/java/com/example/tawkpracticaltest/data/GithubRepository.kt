@@ -9,12 +9,18 @@ class GithubRepository constructor(
     private val remoteSource: GithubRemoteDataSource
 ) {
 
-    suspend fun updateUser(user: GithubUser) {
-        localSource.saveUser(user)
+    suspend fun getUsersFromCache(): Result<List<GithubUser>> {
+        val localUsers = localSource.getUsers()
+        if (localUsers is Result.Success) return localUsers
+        return Result.Error(Exception("Unable to fetch data"))
+    }
+
+    suspend fun updateUser(user: GithubUser): Result<Int> {
+        return localSource.updateUser(user)
     }
 
     suspend fun getUserProfile(login: String): Result<GithubUserProfile> {
-        return remoteSource.getUserProfile(login)
+        return fetchUserProfileFromRemoteOrLocal(login)
     }
 
     suspend fun getUsers(searchString: String): Result<List<GithubUser>> {
@@ -29,20 +35,37 @@ class GithubRepository constructor(
 
     private suspend fun fetchUsersFromRemoteOrLocal(since: Long = 0L): Result<List<GithubUser>> {
         val remoteUsers = remoteSource.getUsers(since)
-        if(remoteUsers is Result.Success) {
-            refreshLocalDataSource(remoteUsers.data)
+        if (remoteUsers is Result.Success) {
+            refreshUserLocalDataSource(remoteUsers.data)
             return remoteUsers
         }
 
         val localUsers = localSource.getUsers()
-        if(localUsers is Result.Success) return  localUsers
+        if (localUsers is Result.Success) return localUsers
         return Result.Error(Exception("Unable to fetch data"))
     }
 
-    private suspend fun refreshLocalDataSource(users: List<GithubUser>) {
-        for (user in users) {
-            localSource.saveUser(user)
+    private suspend fun refreshUserLocalDataSource(users: List<GithubUser>) {
+        if (users.isNotEmpty())
+            for (user in users) {
+                localSource.saveUser(user)
+            }
+    }
+
+    private suspend fun fetchUserProfileFromRemoteOrLocal(login: String): Result<GithubUserProfile> {
+        val remoteUserProfile = remoteSource.getUserProfile(login)
+        if (remoteUserProfile is Result.Success) {
+            refreshUserProfileLocalDataSource(remoteUserProfile.data)
+            return remoteUserProfile
         }
+
+        val localUserProfile = localSource.getUserProfile(login)
+        if (localUserProfile is Result.Success) return localUserProfile
+        return Result.Error(Exception("Unable to fetch data"))
+    }
+
+    private suspend fun refreshUserProfileLocalDataSource(userProfile: GithubUserProfile) {
+        localSource.saveUserProfile(userProfile)
     }
 
     companion object {

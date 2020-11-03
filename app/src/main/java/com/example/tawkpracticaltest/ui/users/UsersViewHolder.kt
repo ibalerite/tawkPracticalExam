@@ -22,10 +22,10 @@ class UsersViewHolder constructor(
 
     // Negative matrix color
     private val negative = floatArrayOf(
-        -1.0f,     .0f,     .0f,    .0f,  255.0f,
-        .0f,   -1.0f,     .0f,    .0f,  255.0f,
-        .0f,     .0f,   -1.0f,    .0f,  255.0f,
-        .0f,     .0f,     .0f,   1.0f,     .0f
+        -1.0f, .0f, .0f, .0f, 255.0f,
+        .0f, -1.0f, .0f, .0f, 255.0f,
+        .0f, .0f, -1.0f, .0f, 255.0f,
+        .0f, .0f, .0f, 1.0f, .0f
     )
 
     fun bind(user: GithubUser, invertAvatarColors: Boolean = false) {
@@ -41,6 +41,13 @@ class UsersViewHolder constructor(
             avatar.colorFilter = ColorMatrixColorFilter(negative)
         } else {
             avatar.colorFilter = null
+        }
+
+
+        if (user.notes != null) {
+            noteIcon.visibility = View.VISIBLE
+        } else {
+            noteIcon.visibility = View.GONE
         }
 
         itemView.setOnClickListener {

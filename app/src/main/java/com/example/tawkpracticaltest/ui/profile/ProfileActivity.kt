@@ -1,5 +1,8 @@
 package com.example.tawkpracticaltest.ui.profile
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -9,11 +12,13 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import coil.load
 import com.example.tawkpracticaltest.R
+import com.example.tawkpracticaltest.data.models.GithubUser
 import com.example.tawkpracticaltest.data.models.GithubUserProfile
 import com.example.tawkpracticaltest.ui.TawkUiState
 import com.example.tawkpracticaltest.ui.TawkViewModel
 import com.example.tawkpracticaltest.ui.TawkViewModelFactory
 import com.facebook.shimmer.ShimmerFrameLayout
+import kotlinx.android.synthetic.main.activity_profile.*
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -31,6 +36,8 @@ class ProfileActivity : AppCompatActivity() {
     private var save: Button? = null
     private var profileShimmerLayout: ShimmerFrameLayout? = null
     private var profileLayout: LinearLayout? = null
+    private var user: GithubUser? = null
+    private var notes: TextView? = null
 
 
 
@@ -49,7 +56,9 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun initParcels() {
         if (intent.hasExtra(EXTRA_USER)) {
-            viewModel.getUserProfile(intent.getStringExtra(EXTRA_USER) ?: return)
+            user = intent.getParcelableExtra(EXTRA_USER)
+
+            viewModel.getUserProfile(user?.login ?: return)
         }
     }
 
@@ -62,7 +71,8 @@ class ProfileActivity : AppCompatActivity() {
         name = findViewById(R.id.name)
         company = findViewById(R.id.company)
         blog = findViewById(R.id.blog)
-        notesEditText = findViewById(R.id.notes)
+        notes = findViewById(R.id.notes)
+        notesEditText = findViewById(R.id.notesEditText)
         save = findViewById(R.id.save)
         profileShimmerLayout = findViewById(R.id.profileShimmerLayout)
         profileLayout = findViewById(R.id.profile)
@@ -75,9 +85,12 @@ class ProfileActivity : AppCompatActivity() {
     private fun initBindingEvents() {
         notesEditText?.addTextChangedListener {
             save?.isEnabled = true
+            user?.notes = notesEditText!!.text.toString()
         }
-
         save?.setOnClickListener {
+            user?.let {
+                viewModel.updateUser(it)
+            }
         }
     }
 
@@ -85,8 +98,22 @@ class ProfileActivity : AppCompatActivity() {
         viewModel.uiState.observe(this, { _uiState ->
             val uiState = _uiState ?: return@observe
 
-            if (uiState is TawkUiState.UserProfileReceived) {
-                updateUserProfile(uiState.profile)
+            when (uiState) {
+                is TawkUiState.UserProfileReceived -> updateUserProfile(uiState.profile)
+                is TawkUiState.UserRetrieved -> {
+                    user = uiState.user
+                    notes?.text = user?.notes
+                }
+
+                is TawkUiState.UserUpdated -> {
+                    val resultIntent = Intent()
+                    resultIntent.putExtra(EXTRA_USER, user)
+
+                    setResult(Activity.RESULT_OK, resultIntent)
+                    finish()
+                }
+
+                else -> {}
             }
         })
     }
@@ -110,6 +137,7 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateUserProfile(profile: GithubUserProfile) {
 
         avatar?.load(profile.avatarUrl)
@@ -119,6 +147,7 @@ class ProfileActivity : AppCompatActivity() {
         name?.text = "Name: " + profile.name
         company?.text = "Company: " + profile.company
         blog?.text = "Blog: " + profile.blog
+        notesEditText?.setText(user?.notes)
 
         profileLayout?.visibility = View.VISIBLE
         profileShimmerLayout?.stopShimmer()
@@ -127,6 +156,7 @@ class ProfileActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_USER = "EXTRA_USER"
+        const val REQUEST_CODE = 1000
     }
 
 

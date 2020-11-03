@@ -42,6 +42,7 @@ object DependencyProvider {
             GithubRepository.getInstance(
                 localDataSource = GithubLocalDataSource(
                     db.githubUserDao(),
+                    db.githubUserProfileDao(),
                     provideDispatcherProvider().value
                 ),
                 remoteDataSource = GithubRemoteDataSource(githubService)

@@ -15,9 +15,16 @@ interface GithubUserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: GithubUser)
 
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateUser(user: GithubUser): Int
+
+    @Query("SELECT * FROM github_user WHERE login = :login")
+    suspend fun getUser(login: String) : GithubUser
+
     @Delete
     suspend fun delete(user: GithubUser)
 
     @Query("DELETE FROM github_user")
     suspend fun deleteAll()
+
 }
