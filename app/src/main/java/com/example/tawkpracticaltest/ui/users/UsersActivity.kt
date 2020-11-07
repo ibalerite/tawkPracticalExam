@@ -24,6 +24,7 @@ import com.example.tawkpracticaltest.ui.TawkViewModelFactory
 import com.example.tawkpracticaltest.ui.profile.ProfileActivity
 import com.example.tawkpracticaltest.util.ConnectivityChecker
 import com.facebook.shimmer.ShimmerFrameLayout
+import kotlinx.android.synthetic.main.activity_profile.*
 
 class UsersActivity : AppCompatActivity() {
 
@@ -50,7 +51,7 @@ class UsersActivity : AppCompatActivity() {
             // 1 is down
             // -1 is up
             if (!recyclerView.canScrollVertically(1) && !searching && !loading) {
-                viewModel.getUsers(adapter?.items?.size?.toLong() ?: return)
+                viewModel.getUsers(adapter?.items?.maxOf { it.id } ?: return)
             }
         }
     }
@@ -66,7 +67,12 @@ class UsersActivity : AppCompatActivity() {
         initViewModelObservers()
         initializeConnectivityChecker()
 
-        viewModel.getUsers()
+
+        if (savedInstanceState != null) {
+            initView(savedInstanceState)
+        } else {
+            viewModel.getUsers()
+        }
     }
 
     override fun onResume() {
@@ -88,10 +94,21 @@ class UsersActivity : AppCompatActivity() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(KEY_RECYCLER_VIEW_SCROLL_Y, recyclerView?.scrollY ?: return)
+    }
+
     override fun onPause() {
         recyclerView?.removeOnScrollListener(pagination)
        // _connectivityChecker?.stop
         super.onPause()
+    }
+
+    private fun initView(savedInstanceState: Bundle?) {
+        if (savedInstanceState?.getInt(KEY_RECYCLER_VIEW_SCROLL_Y) != null) {
+            recyclerView?.scrollY = savedInstanceState.getInt(KEY_RECYCLER_VIEW_SCROLL_Y)
+        }
     }
 
     private fun initializeConnectivityChecker() {
@@ -123,6 +140,8 @@ class UsersActivity : AppCompatActivity() {
 
     fun handleNetworkConnected() {
         isNetworkAvailable = true
+
+        viewModel.getUsers(adapter?.items?.maxOf { it.id } ?: return)
     }
 
     private fun initBindingResources() {
@@ -179,6 +198,10 @@ class UsersActivity : AppCompatActivity() {
         shimmerLayout?.visibility = View.GONE
 
         recyclerView?.addOnScrollListener(pagination)
+    }
+
+    companion object {
+        private const val KEY_RECYCLER_VIEW_SCROLL_Y = "KEY_RECYCLER_VIEW_SCROLL_Y"
     }
 
 }
